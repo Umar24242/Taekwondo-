@@ -125,7 +125,7 @@
         <!-- Right Icons: Helmet & Body Protector -->
         <div class="flex items-center space-x-4 text-zinc-400">
             <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12c0 3.69 2.47 6.86 6 8.25V22h8v-1.75c3.53-1.39 6-4.56 6-8.25 0-5.52-4.48-10-10-10zm-3 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12c0 3.69 2.47 6.86 6 8.25V22h8v-1.75c3.53-1.39 6-4.56 6-8.25 0-5.52-4.48-10-10-10zm-3 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm-3-5c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
             </svg>
             <svg class="w-6 h-6 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2L4 5v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V5l-8-3zm0 4c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/>
@@ -214,7 +214,7 @@
     </main>
 
     <!-- FLOATING CONTROL TOOLBAR -->
-    <div class="fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-zinc-900/95 backdrop-blur-md border border-zinc-700/80 rounded-2xl px-4 py-2.5 shadow-2xl flex flex-wrap items-center justify-center gap-2 text-xs">
+    <div class="fixed bottom-3 left-1/2 -translate-x-1/2 z-30 bg-zinc-900/95 backdrop-blur-md border border-zinc-700/80 rounded-2xl px-4 py-2.5 shadow-2xl flex flex-wrap items-center justify-center gap-2">
         
         <!-- Timer Controls -->
         <button id="startPauseBtn" onclick="toggleTimer()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-3 py-1.5 rounded-lg flex items-center space-x-1 transition active:scale-95">
@@ -272,7 +272,6 @@
         let isSensorWindowActive = false;
         let sensorWindowTimer = null;
         let nextBeepTimeout = null;
-        let aiAttackTimeout = null;
 
         // Audio & Microphone Detection
         let audioCtx = null;
@@ -544,16 +543,14 @@
                     }
                 }, 1000);
 
-                // Start Random Beep Triggers and Red AI Attacks
+                // Start Random Beep Triggers only
                 scheduleNextRandomBeep();
-                scheduleAiAttack();
             } else {
                 isRunning = false;
                 document.getElementById('startPauseLabel').innerText = "START";
                 document.getElementById('playIcon').innerText = "▶";
                 clearInterval(timerInterval);
                 clearTimeout(nextBeepTimeout);
-                clearTimeout(aiAttackTimeout);
                 closeSensorWindow();
             }
         }
@@ -562,19 +559,6 @@
             let m = Math.floor(timeLeft / 60);
             let s = timeLeft % 60;
             document.getElementById('timerDisplay').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-        }
-
-        // Red AI Opponent Attacks
-        function scheduleAiAttack() {
-            if (!isRunning) return;
-            let delay = Math.random() * 5000 + 4000;
-            aiAttackTimeout = setTimeout(() => {
-                if (isRunning) {
-                    let points = Math.random() > 0.65 ? 2 : 1;
-                    triggerHit('red', points);
-                    scheduleAiAttack();
-                }
-            }, delay);
         }
 
         // End Round
